@@ -27,7 +27,7 @@
 - #1004 properties rich text: Bug+feature mix, maintainer discussion ongoing.
 
 ## Gap ledger (dedupe — READ FIRST, never re-pick)
-- 2026-08-27 issue #906 — pr-opened (fork PR): recursive shadow-root id lookup + null guard in focusElement; unit spec + e2e tests. Lesson: #666 merged 2024 but bug persisted — always verify against current main, never trust issue version numbers.
+- 2026-08-27 issue #906 — pr-opened (fork PR olitreadwell/gcds-components#1): recursive shadow-root id lookup + null guard in focusElement; unit spec + e2e tests (7 spec tests pass, 6 e2e pass locally). Lesson: #666 merged 2024 but bug persisted — always verify against current main, never trust issue version numbers. Fork CI: Run Tests + Build components triggered after enabling fork workflows via actions/permissions PUT.
 
 ## Mined gaps (discovered, not yet attempted)
 - 2026-08-27 #1374 gcds-card click not registered on card text (regression 0.47→1.4) — status: proposed (next cycle candidate)
