@@ -32,3 +32,7 @@
 ## Mined gaps (discovered, not yet attempted)
 - 2026-08-27 #1374 gcds-card click not registered on card text (regression 0.47→1.4) — status: proposed (next cycle candidate)
 - 2026-08-27 #1324 font size in gcds-table — status: proposed (needs thread read)
+
+## Run note: 2026-08-27 (#1374 picked)
+- #1374 gcds-card description click — pr-opened (fork PR olitreadwell/gcds-components#2): description children pointer-events: none + global light-DOM rule gcds-card abbr { pointer-events: auto } (shadow CSS cannot reach nested slotted abbr). e2e 9 pass (2 new), unit 24 pass, eslint clean, full e2e 241 pass (1 pre-existing flake). Fork CI in_progress at trace time. Failing test verified first.
+- Remaining mined: #1324 gcds-table font size (needs thread read).
