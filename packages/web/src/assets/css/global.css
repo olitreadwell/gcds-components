@@ -30,3 +30,13 @@
 body {
   animation: fade 0.05s normal forwards ease-in-out;
 }
+
+/*
+ * The gcds-card description sits above the stretched card link overlay and is
+ * made click-transparent with pointer-events: none. Shadow CSS cannot reach
+ * slotted content, so this light-DOM rule keeps abbr elements inside the card
+ * hoverable (native title tooltip).
+ */
+gcds-card abbr {
+  pointer-events: auto;
+}
