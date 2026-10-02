@@ -14,6 +14,72 @@ test.describe('gcds-error-summary', () => {
     await expect(element).toHaveClass('hydrated');
   });
 
+  test('focuses a shadow-DOM target from error-links without throwing', async ({
+    page,
+  }) => {
+    const errors: Error[] = [];
+    page.on('pageerror', error => errors.push(error));
+
+    const element = page.locator('gcds-error-summary');
+    await element.waitFor({ state: 'hidden' });
+
+    // Target an id that only exists inside a shadow root, like the internal
+    // input of a gcds component, which document.querySelector cannot see.
+    await element.evaluate(el => {
+      const host = document.createElement('div');
+      const shadow = host.attachShadow({ mode: 'open' });
+      const input = document.createElement('input');
+      input.id = 'shadowTarget';
+      shadow.appendChild(input);
+      document.body.appendChild(host);
+
+      (el as HTMLGcdsErrorSummaryElement).errorLinks =
+        '{"#shadowTarget":"This is the first error"}';
+    });
+
+    await page.waitForChanges();
+
+    const link = element.locator('.summary__errorlist gcds-link');
+    await link.click();
+
+    await page.waitForChanges();
+
+    expect(errors).toHaveLength(0);
+    expect(
+      await page.evaluate(() => {
+        const active = document.activeElement;
+        return (
+          active?.id === 'shadowTarget' ||
+          (active?.shadowRoot?.activeElement?.id ?? '') === 'shadowTarget'
+        );
+      }),
+    ).toBe(true);
+  });
+
+  test('does not throw when the error-links target does not exist', async ({
+    page,
+  }) => {
+    const errors: Error[] = [];
+    page.on('pageerror', error => errors.push(error));
+
+    const element = page.locator('gcds-error-summary');
+    await element.waitFor({ state: 'hidden' });
+
+    await element.evaluate(el => {
+      (el as HTMLGcdsErrorSummaryElement).errorLinks =
+        '{"#doesNotExist":"This is the first error"}';
+    });
+
+    await page.waitForChanges();
+
+    const link = element.locator('.summary__errorlist gcds-link');
+    await link.click();
+
+    await page.waitForChanges();
+
+    expect(errors).toHaveLength(0);
+  });
+
   test('renders from listen', async ({ page }) => {
     const form = page.locator('form');
     await form.waitFor({ state: 'hidden' });
