@@ -109,4 +109,44 @@ describe('gcds-error-summary', () => {
       </gcds-error-summary>
     `);
   });
+
+  it('focuses an element inside a shadow root from error-links', async () => {
+    const page = await newSpecPage({
+      components: [GcdsErrorSummary],
+      html: `<gcds-error-summary
+        error-links='{"#shadowTarget":"This is the first error"}'
+      ></gcds-error-summary>`,
+    });
+
+    // The error link targets an id that lives inside a shadow root (e.g. the
+    // internal input of a gcds component), which document.querySelector
+    // cannot see directly.
+    const host = page.doc.createElement('div');
+    const shadow = host.attachShadow({ mode: 'open' });
+    const target = page.doc.createElement('input');
+    target.id = 'shadowTarget';
+    shadow.appendChild(target);
+    page.doc.body.appendChild(host);
+
+    const focusSpy = jest.spyOn(target, 'focus');
+    const link = page.root.shadowRoot.querySelector('gcds-link');
+    expect(link).not.toBeNull();
+
+    link.click();
+
+    expect(focusSpy).toHaveBeenCalled();
+  });
+
+  it('does not throw when the error-links target does not exist', async () => {
+    const page = await newSpecPage({
+      components: [GcdsErrorSummary],
+      html: `<gcds-error-summary
+        error-links='{"#missingTarget":"This is the first error"}'
+      ></gcds-error-summary>`,
+    });
+
+    expect(() =>
+      page.rootInstance.focusElement('#missingTarget'),
+    ).not.toThrow();
+  });
 });
