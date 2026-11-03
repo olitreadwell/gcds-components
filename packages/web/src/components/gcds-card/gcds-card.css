@@ -67,6 +67,7 @@
       & > * {
         z-index: 1;
         position: relative;
+        pointer-events: none;
       }
 
       @media only screen and (width < 48em) {
